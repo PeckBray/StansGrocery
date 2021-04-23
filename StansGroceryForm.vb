@@ -26,11 +26,11 @@ Public Class StansGroceryForm
             Console.WriteLine($"{Me.food(i, 0)} {Me.food(i, 1)} {Me.food(i, 2)} {i}")
 
         Next
-
+        DisplayListBox.Sorted = True
 
     End Sub
 
-    Sub Program()
+    Sub FilterSearch()
         Dim temp As String
         If FilterByAisleRadioButton.Checked = True Then
             FilterComboBox.Items.Clear()
@@ -49,7 +49,18 @@ Public Class StansGroceryForm
             End Try
         ElseIf FilterByCategoryRadioButton.Checked = True Then
             FilterComboBox.Items.Clear()
-            FilterComboBox.Items.Add("Show All")
+            Try
+                For i = 1 To UBound(food)
+                    temp = Me.food(i, 2).PadLeft(2)
+                    'If Me.food(i - 1, 1) = Me.food(i, 1) Then
+                    If FilterComboBox.Items.Contains(temp) Or temp = "  " Then
+                    Else
+                        Console.WriteLine(Me.food(i, 2))
+                        FilterComboBox.Items.Add(temp)
+                    End If
+                Next
+            Catch ex As Exception
+            End Try
 
         End If
         FilterComboBox.Sorted = True
@@ -64,14 +75,13 @@ Public Class StansGroceryForm
     End Sub
 
     Private Sub FilterByAisleRadioButton_CheckedChanged(sender As Object, e As EventArgs) Handles FilterByAisleRadioButton.CheckedChanged
-        Program()
+        FilterSearch()
+        FilterComboBox.SelectedItem = "Show All"
     End Sub
-
-    Private Sub FilterByCategoryRadioButton_CheckedChanged(sender As Object, e As EventArgs) Handles FilterByCategoryRadioButton.CheckedChanged
-        Program()
-    End Sub
-
     Private Sub SearchButton_Click(sender As Object, e As EventArgs) Handles SearchButton.Click
+        Search()
+    End Sub
+    Sub Search()
         DisplayListBox.Items.Clear()
         For i = 0 To UBound(Me.food)
             Try
@@ -82,10 +92,62 @@ Public Class StansGroceryForm
             End Try
         Next
     End Sub
-
     Private Sub DisplayListBox_SelectedIndexChanged(sender As Object, e As EventArgs) Handles DisplayListBox.SelectedIndexChanged
-        Dim index As Integer
-        index = DisplayListBox.SelectedIndex
-        DisplayLabel.Text = $"{Me.food(index, 0)}, Aisle {Me.food(index, 1)}, {Me.food(index, 2)}"
+        Dim item As String
+        item = CStr(DisplayListBox.SelectedItem)
+        Console.WriteLine(item)
+        For i = 0 To UBound(Me.food)
+            If food(i, 0) = item Then
+                DisplayLabel.Text = $"{Me.food(i, 0)}, Aisle {Me.food(i, 1)}, {Me.food(i, 2)}"
+            End If
+        Next
+    End Sub
+    Sub DefaultListBox()
+        DisplayListBox.Items.Clear()
+
+        For i = 0 To UBound(Me.food)
+            DisplayListBox.Items.Add(Me.food(i, 0))
+        Next
+    End Sub
+
+    Private Sub FilterComboBox_DropDownClosed(sender As Object, e As EventArgs) Handles FilterComboBox.DropDownClosed
+        Dim aisle As Integer
+        Dim isAisle As Boolean
+        DisplayListBox.Items.Clear()
+
+        Try
+            aisle = CInt(FilterComboBox.SelectedItem)
+            isAisle = True
+        Catch ex As Exception
+
+        End Try
+
+        If CStr(FilterComboBox.SelectedItem) = "Show All" Then
+            DefaultListBox()
+        ElseIf isAisle = True Then
+            For i = 0 To UBound(Me.food)
+                If food(i, 1) = CStr(aisle) Then
+                    DisplayListBox.Items.Add(Me.food(i, 0))
+                End If
+            Next
+        ElseIf isAisle = False Then
+            For i = 0 To UBound(Me.food)
+                If food(i, 2) = CStr(FilterComboBox.SelectedItem) Then
+                    DisplayListBox.Items.Add(Me.food(i, 0))
+                End If
+            Next
+        End If
+    End Sub
+
+    Private Sub AboutToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AboutToolStripMenuItem.Click
+        AboutForm.Show()
+    End Sub
+
+    Private Sub SearchToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SearchToolStripMenuItem.Click
+        Search()
+    End Sub
+
+    Private Sub ExitToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ExitToolStripMenuItem.Click
+        Me.Close()
     End Sub
 End Class
