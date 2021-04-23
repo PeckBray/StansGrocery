@@ -83,6 +83,7 @@ Public Class StansGroceryForm
     End Sub
     Sub Search()
         DisplayListBox.Items.Clear()
+        Dim itemsMatched As Integer
         For i = 0 To UBound(Me.food)
             Try
                 If StrConv(Me.food(i, 0), vbLowerCase).Contains(StrConv(SearchTextBox.Text, vbLowerCase)) Then
@@ -91,6 +92,10 @@ Public Class StansGroceryForm
             Catch ex As Exception
             End Try
         Next
+        itemsMatched = DisplayListBox.Items.Count
+        If itemsMatched = 0 Then
+            DisplayLabel.Text = $"Sorry no matches for {SearchTextBox.Text}"
+        End If
     End Sub
     Private Sub DisplayListBox_SelectedIndexChanged(sender As Object, e As EventArgs) Handles DisplayListBox.SelectedIndexChanged
         Dim item As String
