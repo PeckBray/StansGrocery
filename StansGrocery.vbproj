@@ -47,6 +47,10 @@
   <PropertyGroup>
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>
+    </ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -141,6 +145,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Grocery.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Splash Screen Image.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="BP logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="BP logo.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>
