@@ -21,12 +21,17 @@ Public Class StansGroceryForm
             Me.food(i, 0) = temp2(0)
             Me.food(i, 1) = temp2(1)
             Me.food(i, 2) = temp2(2)
-            DisplayListBox.Items.Add(Me.food(i, 0))
+            If Me.food(i, 0) <> "" Then
+                DisplayListBox.Items.Add(Me.food(i, 0))
+            End If
 
             Console.WriteLine($"{Me.food(i, 0)} {Me.food(i, 1)} {Me.food(i, 2)} {i}")
 
         Next
+        FilterComboBox.Items.Insert(0, "Show All")
+        FilterComboBox.SelectedIndex = 0
         DisplayListBox.Sorted = True
+        FilterByAisleRadioButton.Checked = True
 
     End Sub
 
@@ -78,6 +83,10 @@ Public Class StansGroceryForm
         FilterSearch()
         FilterComboBox.SelectedItem = "Show All"
     End Sub
+    Private Sub FilterByCategoryRadioButton_CheckedChanged(sender As Object, e As EventArgs) Handles FilterByCategoryRadioButton.CheckedChanged
+        FilterSearch()
+        FilterComboBox.SelectedItem = "Show All"
+    End Sub
     Private Sub SearchButton_Click(sender As Object, e As EventArgs) Handles SearchButton.Click
         Search()
     End Sub
@@ -86,7 +95,7 @@ Public Class StansGroceryForm
         Dim itemsMatched As Integer
         For i = 0 To UBound(Me.food)
             Try
-                If StrConv(Me.food(i, 0), vbLowerCase).Contains(StrConv(SearchTextBox.Text, vbLowerCase)) Then
+                If StrConv(Me.food(i, 0), vbLowerCase).Contains(StrConv(SearchTextBox.Text, vbLowerCase)) And Me.food(i, 0) <> "" Then
                     DisplayListBox.Items.Add(Me.food(i, 0))
                 End If
             Catch ex As Exception
@@ -96,6 +105,7 @@ Public Class StansGroceryForm
         If itemsMatched = 0 Then
             DisplayLabel.Text = $"Sorry no matches for {SearchTextBox.Text}"
         End If
+        FilterComboBox.SelectedIndex = 0
     End Sub
     Private Sub DisplayListBox_SelectedIndexChanged(sender As Object, e As EventArgs) Handles DisplayListBox.SelectedIndexChanged
         Dim item As String
@@ -111,7 +121,9 @@ Public Class StansGroceryForm
         DisplayListBox.Items.Clear()
 
         For i = 0 To UBound(Me.food)
-            DisplayListBox.Items.Add(Me.food(i, 0))
+            If Me.food(i, 0) <> "" Then
+                DisplayListBox.Items.Add(Me.food(i, 0))
+            End If
         Next
     End Sub
 
@@ -131,13 +143,13 @@ Public Class StansGroceryForm
             DefaultListBox()
         ElseIf isAisle = True Then
             For i = 0 To UBound(Me.food)
-                If food(i, 1) = CStr(aisle) Then
+                If food(i, 1) = CStr(aisle) And Me.food(i, 0) <> "" Then
                     DisplayListBox.Items.Add(Me.food(i, 0))
                 End If
             Next
         ElseIf isAisle = False Then
             For i = 0 To UBound(Me.food)
-                If food(i, 2) = CStr(FilterComboBox.SelectedItem) Then
+                If food(i, 2) = CStr(FilterComboBox.SelectedItem) And Me.food(i, 0) <> "" Then
                     DisplayListBox.Items.Add(Me.food(i, 0))
                 End If
             Next
